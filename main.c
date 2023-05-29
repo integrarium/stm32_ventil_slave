@@ -57,8 +57,8 @@ void DMA_Configuration(DMA_InitTypeDef *DMA_InitStructure)
 
 void ADC_Config(void)
 {
-  GPIO_InitTypeDef      GPIO_InitStructure;
-  ADC_InitTypeDef       ADC_InitStructure;
+  GPIO_InitTypeDef	GPIO_InitStructure;
+  ADC_InitTypeDef	ADC_InitStructure;
 
   /* Configure the ADC clock (must not exceed 14MHz) */
   RCC_ADCCLKConfig(RCC_PCLK2_Div8);
@@ -131,9 +131,9 @@ void ADC1_2_IRQHandler(void)
     for (i=0;i<2;i++)
     {
 
-	          if (abs(temperature_data[i]-ADC_DMA_buffer[i])<50)
-                  temperature_data[i] = temperature_data[i]*0.95+ADC_DMA_buffer[i]*0.05;
-      else        temperature_data[i] = ADC_DMA_buffer[i];
+		  if (abs(temperature_data[i]-ADC_DMA_buffer[i])<50)
+		  temperature_data[i] = temperature_data[i]*0.95+ADC_DMA_buffer[i]*0.05;
+      else	  temperature_data[i] = ADC_DMA_buffer[i];
     }
   }
 // -----------------  RCC config ---------------------------------------
@@ -257,7 +257,7 @@ void GPIO_Configuration(void)
 
     /* Configure USART2 TX_EN (PA.01) as out push-pull */
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;		  //rs-485     - разрешение передачи
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;		//rs-485     - разрешение передачи
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     GPIO_ResetBits(GPIOA, GPIO_Pin_1);
@@ -624,16 +624,16 @@ void TIM3_IRQHandler (void)
     u32 temp_tim3;
 
     tim_flags = TIM3->SR;
-//    		TIM_GetFlagStatus(TIM3, TIM_IT_Update | TIM_IT_CC1 | TIM_IT_CC2);
+//		TIM_GetFlagStatus(TIM3, TIM_IT_Update | TIM_IT_CC1 | TIM_IT_CC2);
     TIM_ClearFlag (TIM3, TIM_FLAG_Update | TIM_FLAG_CC1 | TIM_FLAG_CC2);	    //сброс флага
 //    if (tim_flags != TIM_IT_Update)
-//      {
-//    	 CorrConf[0]->FanTimCapt++;
+//	{
+//	 CorrConf[0]->FanTimCapt++;
 
-//      }
-    temp_tim3 = ((HighWordTimCnt+1)<<16);
-    if (((temp_tim3-temp_tim3_1)>>10) > 0xffff) CorrConf[0]->FanSpeed = 0; //скорость меньше порога
-    if (((temp_tim3-temp_tim3_2)>>10) > 0xffff) CorrConf[1]->FanSpeed = 0; //скорость меньше порога
+//	}
+    //temp_tim3 = ((HighWordTimCnt+1)<<16);
+    //if (((temp_tim3-temp_tim3_1)>>10) > 0xffff) CorrConf[0]->FanSpeed = 0; //скорость меньше порога
+    //if (((temp_tim3-temp_tim3_2)>>10) > 0xffff) CorrConf[1]->FanSpeed = 0; //скорость меньше порога
 
     if (tim_flags & TIM_FLAG_Update)  //частота = 48 МГц/65536 = 732 Гц
     {
@@ -661,24 +661,24 @@ void TIM3_IRQHandler (void)
       }
     if ((CorrConf[0]->WorkMode & 1)==0) //режим "регулятор расхода"
       {
-        CorrConf[0]->power=power & 0xffff;
-        VentConf->fan_power=power*10000/0xffff;
-        CorrConf[0]->error=err_pres & 0xffff;
-    	TIM3->CCR3=power;  //перезапись расчитанной мощности в таймер
-        TIM3->CCR4-=1;
+	CorrConf[0]->power=power & 0xffff;
+	VentConf->fan_power=power*10000/0xffff;
+	CorrConf[0]->error=err_pres & 0xffff;
+	TIM3->CCR3=power;  //перезапись расчитанной мощности в таймер
+	TIM3->CCR4-=1;
       }
     }
     else if (tim_flags & TIM_FLAG_CC1)
       {
       temp_tim3 = (HighWordTimCnt<<16) | TIM3->CCR1;
-//      CorrConf[0]->FanTimCapt = (temp_tim3-temp_tim3_1)>>10;
+//	CorrConf[0]->FanTimCapt = (temp_tim3-temp_tim3_1)>>10;
       if (((temp_tim3-temp_tim3_1)>>10) < 0xffff) CorrConf[1]->FanSpeed = 48000000/(temp_tim3-temp_tim3_1) ; //считаем скорость
       temp_tim3_1=temp_tim3;
       }
     else if (tim_flags & TIM_FLAG_CC2)
       {
       temp_tim3 = (HighWordTimCnt<<16) | TIM3->CCR2;
-//      CorrConf[1]->FanTimCapt = (temp_tim3-temp_tim3_2)>>10;
+//	CorrConf[1]->FanTimCapt = (temp_tim3-temp_tim3_2)>>10;
       if (((temp_tim3-temp_tim3_2)>>10) < 0xffff) CorrConf[0]->FanSpeed = 48000000/(temp_tim3-temp_tim3_2) ; //скорость
       temp_tim3_2=temp_tim3;
       }
@@ -716,7 +716,7 @@ u16 *p_devconf;
 		  {
 		  temp=(frame[4]<<8)|frame[5];
 		  addr=(frame[2]<<8)|frame[3];
-			if (temp>100) temp=100;	//если запрошено больше 100 регистров, то отдаём только первые 100 (буфер-то не резиновый)
+			if (temp>100) temp=100; //если запрошено больше 100 регистров, то отдаём только первые 100 (буфер-то не резиновый)
 		  frame[2]=temp*2;		//кол-во байт данных в пакете
 		  for (i=0; i<temp; i++)
 		    {
@@ -915,9 +915,9 @@ uint8_t XGZP_ReadByte(I2C_TypeDef* I2Cx, uint8_t addr)
 /***************************************************************************************/
 void hx711_clkpulse ()
   {
-	 GPIOB->ODR|=(GPIO_ODR_ODR15);    //SCK = 1    импульс начало
-	 GPIOB->ODR|=(GPIO_ODR_ODR15);    //SCK = 1    импульс начало
-	 GPIOB->ODR|=(GPIO_ODR_ODR15);    //SCK = 1    импульс начало
+	 GPIOB->ODR|=(GPIO_ODR_ODR15);	  //SCK = 1    импульс начало
+	 GPIOB->ODR|=(GPIO_ODR_ODR15);	  //SCK = 1    импульс начало
+	 GPIOB->ODR|=(GPIO_ODR_ODR15);	  //SCK = 1    импульс начало
 	//Count=Count^0x800000;
 	 GPIOB->ODR&=~(GPIO_ODR_ODR15);    //SCK = 0  импульс конец
 	 GPIOB->ODR&=~(GPIO_ODR_ODR15);    //SCK = 0  импульс конец
@@ -1027,8 +1027,8 @@ void BKPFill (void)
       }
     else
       {
-    	for (i=0; i<ParNumTableBKPSize; i++) dev_conf[0].devConfig[ParNumTableBKP[i]]=buf[i]; //читаем все параметры из BKP
-        VentConf->con_alarm&=~1;
+	for (i=0; i<ParNumTableBKPSize; i++) dev_conf[0].devConfig[ParNumTableBKP[i]]=buf[i]; //читаем все параметры из BKP
+	VentConf->con_alarm&=~1;
 
 	  }
 	}
@@ -1057,11 +1057,12 @@ int main(void)
     s32 press32;
     s16 temper;
     u32 Count;
-    u16 Count_time;
+    //u16 Count_time;
     char debugstr[100];
     u16 PrevmSecondCounter; //предыдущее значение счётчика миллисекунд
     u8 hx710_phase=0;
     u16 GateWayState=0;
+    u8 Slave_Err; // ошибки слейва
 
 	//u16 kf_press1, kf_press2; // переменные коэф пропорциональности
 
@@ -1085,35 +1086,36 @@ int main(void)
     usart_init();
 
     init_I2C1();
-    //    init_I2C2();
+    //	  init_I2C2();
     CorrConf[0]=&dev_conf[0];
     CorrConf[1]=&dev_conf[1];
     VentConf=&dev_conf[2];
     // начальные значения настроек в случае отсутствия их во флеше
     CorrConf[0]->OurMBAddress = 2; //ardress modbus (датчик перепада на фильтре)
-    //    CorrConf[1]->OurMBAddress=3; //больше не участвует в работе // ardress modbus (датчик потока на двигателе)
-    //    CorrConf[0]->temper_base=20; //больше не участвует в работе // температура базовая
-    //    CorrConf[1]->temper_base=20; //температура базовая больше нет. настройка по первому регистру
+    //	  CorrConf[1]->OurMBAddress=3; //больше не участвует в работе // ardress modbus (датчик потока на двигателе)
+    //	  CorrConf[0]->temper_base=20; //больше не участвует в работе // температура базовая
+    //	  CorrConf[1]->temper_base=20; //температура базовая больше нет. настройка по первому регистру
     CorrConf[0]->WorkMode=1;   //вкл режим "шлюз" односторонний, уф включен
     VentConf->Kfactor = 77; //
     VentConf->flaw_set1 = 1000; //уставка потока 1
-    VentConf->flaw_set1 = 500;  //уставка потока 2
+    VentConf->flaw_set1 = 500;	//уставка потока 2
     VentConf->min_pres = 60; //нижнее давление для определения аварии фильтра
     VentConf->max_pres = 350; //верхнее давление для определения аварии фильтра
-    VentConf->Version = 401; //Номер версии прошивки
+    VentConf->Version = 102; //Номер версии slave прошивки
     CorrConf[0]->FFMnumber=1; //количество ФВМ
     CorrConf[0]->InFanPower=1000; // мощность мотора
     VentConf->fan_on=0;
-//      VentConf->UVSecondCounter=BKP_ReadBackupRegister(BKP_DR1); //наработку в секундах берём из бакап-озу (на батарейке)
+//	VentConf->UVSecondCounter=BKP_ReadBackupRegister(BKP_DR1); //наработку в секундах берём из бакап-озу (на батарейке)
     CorrConf[0]->PCA9534_3 =0xf0; //старший полубайт PCA9534 на выход
     CorrConf[0]->LightTime =20; //Время освещения
-    CorrConf[0]->BlowTime =30;  // Время обработки
-    CorrConf[0]->CheckTime =3;  // Время до проверки
+    CorrConf[0]->BlowTime =30;	// Время обработки
+    CorrConf[0]->CheckTime =7;	// Время до проверки
 
     FlashFill();
     BKPFill();
 
-    GA_Adress=CorrConf[0]->OurMBAddress>>1;  //адрес на слейв-и2ц = адресу на модбасе
+    //GA_Adress=CorrConf[0]->OurMBAddress;  //адрес на слейв-и2ц = адресу на модбасе
+    GA_Adress=0x0f;  //адрес на слейв-и2ц 0f
     ADC_TempSensorVrefintCmd(ENABLE);
     ADC_DMA_buffer[0]=0;
     ADC_DMA_buffer[1]=0;
@@ -1129,41 +1131,41 @@ int main(void)
     // три старших бита порта PCA9534 на выход
 //    SW_I2C_WriteControl_8Bit(SW_I2C2,0x40,3,0x1f);
 
-//            I2C_StartTransmission(I2C2,I2C_Direction_Transmitter,0x40);
-//            I2C_WriteData(I2C2,3);
-//            I2C_WriteData(I2C2,0x1f);
-//            I2C_GenerateSTOP(I2C2, ENABLE);
+//	      I2C_StartTransmission(I2C2,I2C_Direction_Transmitter,0x40);
+//	      I2C_WriteData(I2C2,3);
+//	      I2C_WriteData(I2C2,0x1f);
+//	      I2C_GenerateSTOP(I2C2, ENABLE);
     SecondCounter=0;
 
     while (1)
     {
-    	FlashSyncronize();
-    	BKPWriteAll();
+	FlashSyncronize();
+	BKPWriteAll();
 
-    	//реостат
-    	CorrConf[0]->rheostat=temperature_data[0];
-    		//(3469.2/(log(temperature_data[0]/(4096-temperature_data[0]))+3469.2/298.15)-273.15)*100;
-    	//температура МК
-    	CorrConf[0]->temperature= ((1750.0-temperature_data[1])/5+25)*100;
-    	if (CorrConf[0]->OurMBAddress==0) CorrConf[0]->OurMBAddress=1;
+	//реостат
+	CorrConf[0]->rheostat=temperature_data[0];
+		//(3469.2/(log(temperature_data[0]/(4096-temperature_data[0]))+3469.2/298.15)-273.15)*100;
+	//температура МК
+	CorrConf[0]->temperature= ((1750.0-temperature_data[1])/5+25)*100;
+	if (CorrConf[0]->OurMBAddress==0) CorrConf[0]->OurMBAddress=1;
 
-    	if ((VentConf->filter_alarm>0) || (VentConf->fan_alarm>0)) VentConf->main_alarm=1;
-    	else VentConf->main_alarm=0;
+	if ((VentConf->filter_alarm>0) || (VentConf->fan_alarm>0)) VentConf->main_alarm=1;
+	else VentConf->main_alarm=0;
 
-    	PrevmSecondCounter=mSecondCounter;
+	PrevmSecondCounter=mSecondCounter;
 
-    	if (((CorrConf[0]->WorkMode & 1)==0)          //режим регулятора
-    			&& (VentConf->fan_power==0))
-    		VentConf->fan_alarm = 0; // сброс аварии мотора
+	if (((CorrConf[0]->WorkMode & 1)==0)	      //режим регулятора
+			&& (VentConf->fan_power==0))
+		VentConf->fan_alarm = 0; // сброс аварии мотора
 
-    	if (VentConf->set_select == 0) CorrConf[0]->ustav = VentConf->flaw_set1;
-    	else CorrConf[0]->ustav = VentConf->flaw_set2;
+	if (VentConf->set_select == 0) CorrConf[0]->ustav = VentConf->flaw_set1;
+	else CorrConf[0]->ustav = VentConf->flaw_set2;
 
-    	if (VentConf->LightOn==1) GPIO_SetBits(GPIOB, GPIO_Pin_2);
-    	else  GPIO_ResetBits(GPIOB, GPIO_Pin_2);
+	if (VentConf->LightOn==1) GPIO_SetBits(GPIOB, GPIO_Pin_2);
+	else  GPIO_ResetBits(GPIOB, GPIO_Pin_2);
 
-    	if (VentConf->UV_on==1) GPIO_SetBits(GPIOB, GPIO_Pin_1);
-    	else  GPIO_ResetBits(GPIOB, GPIO_Pin_1);
+	if (VentConf->UV_on==1) GPIO_SetBits(GPIOB, GPIO_Pin_1);
+	else  GPIO_ResetBits(GPIOB, GPIO_Pin_1);
 
 //	  if (GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13)==0) VentConf->fan_alarm = 0;
 //	  else VentConf->fan_alarm = 1;
@@ -1177,13 +1179,13 @@ int main(void)
 */
 // --------------------- первый датчик -------------------------------------------------------------------------
 
-    	i2c_error=0;
-    	XGZP_WriteByte(I2C1, 0xa5, XGZP_ReadByte(I2C1, 0xa5)&0xfd); //Set ADC output calibrated Data
-    	XGZP_WriteByte(I2C1, 0x30, 0x0A); //indicate a combined conversion (once temperature conversion immediately followed by once sensor signal conversion)
+	i2c_error=0;
+	XGZP_WriteByte(I2C1, 0xa5, XGZP_ReadByte(I2C1, 0xa5)&0xfd); //Set ADC output calibrated Data
+	XGZP_WriteByte(I2C1, 0x30, 0x0A); //indicate a combined conversion (once temperature conversion immediately followed by once sensor signal conversion)
 
-    	while ((XGZP_ReadByte(I2C1, 0x30) & 0x08) > 0); //Judge whether Data collection is over
+	while ((XGZP_ReadByte(I2C1, 0x30) & 0x08) > 0); //Judge whether Data collection is over
 	//     press=XGZP_ReadByte(I2C1, 0x5) << 16;
-    	press=XGZP_ReadByte(I2C1, 0x6) << 8;
+	press=XGZP_ReadByte(I2C1, 0x6) << 8;
 	    press|=XGZP_ReadByte(I2C1, 0x7) ;
 
 //	   if (press&0x8000) press |=0xffff0000;  //расширение знака
@@ -1194,55 +1196,55 @@ int main(void)
 
 	    if (i2c_error==0)
 	    {
-	    	CorrConf[0]->rawpress_i2c = press;
-	    	CorrConf[0]->temper_i2c = temper*100/256; // Получаем градусы * 100
+		CorrConf[0]->rawpress_i2c = press;
+		CorrConf[0]->temper_i2c = temper*100/256; // Получаем градусы * 100
 //	 CorrConf->press_i2c = ((s32)(temp16)*5000/32767-5000-CorrConf->press_offset);
 //	  CorrConf[0]->press_i2c = (((temp16+1024)/60)-500-CorrConf[0]->press_offset)*(1+(CorrConf[0]->kf_press/100));
 //		  CorrConf[0]->press_i2c = ( (temp16+1024)/60 -500-CorrConf[0]->press_offset)*(100+CorrConf[0]->kf_press)/100;
 
 	      //CorrConf[0]->press_i2c =(press-CorrConf[0]->press_offset)/(1+CorrConf[0]->kf_press);// для уменьшения в К раз - не работает
 
-	    	press32=press;
-	    	press32-=CorrConf[0]->press_offset;
-	    	if (press32>0x7fff) press32 =0x7fff;
-	    	if (press32<-0x8000) press32 =-0x8000;
+		press32=press;
+		press32-=CorrConf[0]->press_offset;
+		if (press32>0x7fff) press32 =0x7fff;
+		if (press32<-0x8000) press32 =-0x8000;
 //	CorrConf[0]->tcomp_offset = (2.5*(CorrConf[0]->temper_base/100 - CorrConf[0]->temper_i2c/100)); // уход нуля
 //	    CorrConf[0]->tcomp_diap = (press32 + CorrConf[0]->tcomp_offset ) * (100+CorrConf[0]->kf_press)/100 * (1.65 * (CorrConf[0]->temper_i2c - CorrConf[0]->temper_base)/CorrConf[0]->press_diap)/100; //уход диапазона
 //	    CorrConf[0]->press_i2c = (press32 + CorrConf[0]->tcomp_offset ) * (100+CorrConf[0]->kf_press)/100 + CorrConf[0]->tcomp_diap; //сумма
-	    	CorrConf[0]->filter = ((CorrConf[0]->filter*19)+   press32)/20; //с фильтрацией
+		CorrConf[0]->filter = ((CorrConf[0]->filter*19)+   press32)/20; //с фильтрацией
 //	  CorrConf[0]->filter = ((CorrConf[0]->press_i2c*19)+  ( press32 + CorrConf[0]->tcomp_offset ) * (100+CorrConf[0]->kf_press)/100 + CorrConf[0]->tcomp_diap)/20; //с фильтрацией
 	//CorrConf[0]->press_i2c =   (( press32 + CorrConf[0]->tcomp_offset ) * (100+CorrConf[0]->kf_press)/100 + CorrConf[0]->tcomp_diap); //с фильтрацией
 	    //CorrConf[0]->press_i2c = (press - CorrConf[0]->press_offset + CorrConf[0]->tcomp_offset ) * (100+CorrConf[0]->kf_press)/100; //сумма
 
-	    	// записываем значение датчика давления первого канала в регистр
-	    	CorrConf[0]->press_i2c=CorrConf[0]->filter*10/16;
+		// записываем значение датчика давления первого канала в регистр
+		CorrConf[0]->press_i2c=CorrConf[0]->filter*10/16;
 
-	    	if (CorrConf[0]->press_i2c > 0) VentConf->cur_flaw=sqrt(abs(CorrConf[0]->press_i2c))*VentConf->Kfactor/3.16;
-	    	else VentConf->cur_flaw=-sqrt(abs(CorrConf[0]->press_i2c))*VentConf->Kfactor/3.16;
+		if (CorrConf[0]->press_i2c > 0) VentConf->cur_flaw=sqrt(abs(CorrConf[0]->press_i2c))*VentConf->Kfactor/3.16;
+		else VentConf->cur_flaw=-sqrt(abs(CorrConf[0]->press_i2c))*VentConf->Kfactor/3.16;
 
-	    	CorrConf[0]->i2c_success_count++;
-	    	CorrConf[0]->i2c_sens_error = 0; //нет ошибок
+		CorrConf[0]->i2c_success_count++;
+		CorrConf[0]->i2c_sens_error = 0; //нет ошибок
 	    }
 	    else
 	    {
-	    	CorrConf[0]->i2c_sens_error = i2c_error; //ошибка датчика
-	    	i2c_error=0;
-	    	I2C1->CR1 |= I2C_CR1_SWRST; //reset
-	    	// конфигурируем ножки на выход (иногда слетала конфигурация)
-	    	GPIOB->CRH |= GPIO_CRH_CNF8_0 | GPIO_CRH_CNF8_1 |GPIO_CRH_CNF9_0 | GPIO_CRH_CNF9_1;
-	    	if (!((GPIOB->IDR) & (1<<9))) //слейв держит шину
-	    	{
-	    		while  (!((GPIOB->IDR) & (1<<9))) //PB9
-	    		{
-	    			GPIOB->CRH &= ~ GPIO_CRH_CNF8_1; //шлём клоки на PB8, пока слейв не отпуситит шину
-	    			Delay(1);
-	    			GPIOB->CRH |= GPIO_CRH_CNF8_1;
-	    			Delay(1);
-	    		}
-	    	}
-	    	Delay(10);
-	    	I2C1->CR1 &= ~I2C_CR1_SWRST; //отпускаем reset
-	    	init_I2C(I2C1);	   //инит i2c после ресета
+		CorrConf[0]->i2c_sens_error = i2c_error; //ошибка датчика
+		i2c_error=0;
+		I2C1->CR1 |= I2C_CR1_SWRST; //reset
+		// конфигурируем ножки на выход (иногда слетала конфигурация)
+		GPIOB->CRH |= GPIO_CRH_CNF8_0 | GPIO_CRH_CNF8_1 |GPIO_CRH_CNF9_0 | GPIO_CRH_CNF9_1;
+		if (!((GPIOB->IDR) & (1<<9))) //слейв держит шину
+		{
+			while  (!((GPIOB->IDR) & (1<<9))) //PB9
+			{
+				GPIOB->CRH &= ~ GPIO_CRH_CNF8_1; //шлём клоки на PB8, пока слейв не отпуситит шину
+				Delay(1);
+				GPIOB->CRH |= GPIO_CRH_CNF8_1;
+				Delay(1);
+			}
+		}
+		Delay(10);
+		I2C1->CR1 &= ~I2C_CR1_SWRST; //отпускаем reset
+		init_I2C(I2C1);    //инит i2c после ресета
 	    }
 
 // -------------------------- второй датчик ------------------------------------------------------------------------------
@@ -1258,7 +1260,7 @@ int main(void)
 	    XGZP_WriteByte(I2C1, 0x30, 0x0A); //indicate a combined conversion (once temperature conversion immediately followed by once sensor signal conversion)
 
 	    while ((XGZP_ReadByte(I2C1, 0x30) & 0x08) > 0); //Judge whether Data collection is over
-	    //     press=XGZP_ReadByte(I2C1, 0x5) << 16;
+	    //	   press=XGZP_ReadByte(I2C1, 0x5) << 16;
 	    press=XGZP_ReadByte(I2C1, 0x6) << 8;
 	    press|=XGZP_ReadByte(I2C1, 0x7) ;
 
@@ -1270,25 +1272,25 @@ int main(void)
 
 	    if (i2c_error==0)
 	    {
-	    	CorrConf[1]->rawpress_i2c = press;
-	    	CorrConf[1]->temper_i2c = temper*100/256;
+		CorrConf[1]->rawpress_i2c = press;
+		CorrConf[1]->temper_i2c = temper*100/256;
 //	 CorrConf->press_i2c = ((s32)(temp16)*5000/32767-5000-CorrConf->press_offset);
 //	  CorrConf[1]->press_i2c = (((temp16+1024)/60)-500-CorrConf[1]->press_offset)*(1+(CorrConf[1]->kf_press/100));
 //	  CorrConf[1]->press_i2c = ( (temp16+1024)/60 -500-CorrConf[1]->press_offset)*(100+CorrConf[1]->kf_press)/100;
 	     // CorrConf[1]->press_i2c = (press-CorrConf[1]->press_offset)*(100+CorrConf[1]->kf_press)/100; // для увеличения на К процентов
 	   // для увеличения на К процентов
-	    	press32=press;
-	    	press32-=CorrConf[1]->press_offset;
-	    	if (press32>0x7fff) press32 =0x7fff;
-	    	if (press32<-0x8000) press32 =-0x8000;
+		press32=press;
+		press32-=CorrConf[1]->press_offset;
+		if (press32>0x7fff) press32 =0x7fff;
+		if (press32<-0x8000) press32 =-0x8000;
 //	  CorrConf[1]->tcomp_offset = (2.5*(CorrConf[0]->temper_base/100 - CorrConf[1]->temper_i2c/100));
 //	  CorrConf[1]->tcomp_diap = ( press32 + CorrConf[1]->tcomp_offset ) * (100+CorrConf[1]->kf_press)/100 * (1.65 * (CorrConf[1]->temper_i2c - CorrConf[0]->temper_base)/CorrConf[1]->press_diap)/100;
-	    	CorrConf[1]->filter = ((CorrConf[1]->filter*19)+  press32)/20;
+		CorrConf[1]->filter = ((CorrConf[1]->filter*19)+  press32)/20;
 //		  CorrConf[1]->filter = ((CorrConf[1]->filter*19)+  ( press32 + CorrConf[1]->tcomp_offset ) * (100+CorrConf[1]->kf_press)/100 + CorrConf[1]->tcomp_diap)/20;
 	 //	  CorrConf[1]->filter =   (( press32 + CorrConf[1]->tcomp_offset ) * (100+CorrConf[1]->kf_press)/100 + CorrConf[1]->tcomp_diap);
 
       // запись значения давления второго канала в регистр
-	    	CorrConf[1]->press_i2c=CorrConf[1]->filter*10/16;
+		CorrConf[1]->press_i2c=CorrConf[1]->filter*10/16;
 
 	  //	 dev_conf[1].devConfig[0x11]=CorrConf[1]->press_i2c;
 //	  CorrConf[1]->press_i2c/=2;
@@ -1296,51 +1298,50 @@ int main(void)
  //	CorrConf[1]->press_i2c=dev_conf[1].devConfig[0x11];
 	//CorrConf[1]->press_i2c = ( press - CorrConf[1]->press_offset + CorrConf[1]->tcomp_offset ) * (100+CorrConf[1]->kf_press)/100;
 
-	    	if ((CorrConf[0]->WorkMode & 1)==0) //режим "шлюз" выключен
-	    	{
-	    		if (VentConf->set_select == 0) //первая уставка
-	    			if (VentConf->fan_on != 0) //вентилятор включен
-	    				if (abs(VentConf->cur_flaw - CorrConf[0]->ustav)<(CorrConf[0]->ustav / 5)) //если текущий поток в пределах -20% +20% от уставки - можно выдавать аварию фильтра
-	    					if (CorrConf[1]->press_i2c/10 > VentConf->max_pres) VentConf->filter_alarm = 1;
-	    					else if (CorrConf[1]->press_i2c/10 < VentConf->min_pres) VentConf->filter_alarm = 2;
-	    					else VentConf->filter_alarm = 0;
-	    				else VentConf->filter_alarm = 0;  //поток меньше 80% или больше 120% от заданного - нет аварии фильтра
-	    			else VentConf->filter_alarm = 0;	//вентилятор выключен - нет аварии фильтра
-	    		else VentConf->filter_alarm = 0;	//вторая уставка - нет аварии фильтра
-	    	}
-	    	else //режим "шлюз"
-	    	{
-  //тут надо сформировать биты аварии фильтра и вентиляторов
-	    	}
+		if ((CorrConf[0]->WorkMode & 1)==0) //режим "шлюз" выключен
+		{
+			if (VentConf->set_select == 0) //первая уставка
+				if (VentConf->fan_on != 0) //вентилятор включен
+					if (abs(VentConf->cur_flaw - CorrConf[0]->ustav)<(CorrConf[0]->ustav / 5)) //если текущий поток в пределах -20% +20% от уставки - можно выдавать аварию фильтра
+						if (CorrConf[1]->press_i2c/10 > VentConf->max_pres) VentConf->filter_alarm = 1;
+						else if (CorrConf[1]->press_i2c/10 < VentConf->min_pres) VentConf->filter_alarm = 2;
+						else VentConf->filter_alarm = 0;
+					else VentConf->filter_alarm = 0;  //поток меньше 80% или больше 120% от заданного - нет аварии фильтра
+				else VentConf->filter_alarm = 0;	//вентилятор выключен - нет аварии фильтра
+			else VentConf->filter_alarm = 0;	//вторая уставка - нет аварии фильтра
+		}
+		else //режим "шлюз"
+		{
+		}
 
-	    	CorrConf[1]->i2c_success_count++;
-	    	CorrConf[1]->i2c_sens_error = 0; //нет ошибок
+		CorrConf[1]->i2c_success_count++;
+		CorrConf[1]->i2c_sens_error = 0; //нет ошибок
 	    }
 
   //			  (temp16- 1024.0) / 6.0 - 5000;
 
 	    else
 	    {
-	    	CorrConf[1]->i2c_sens_error = i2c_error; //ошибка датчика
-	    	i2c_error=0;
-	    	I2C1->CR1 |= I2C_CR1_SWRST; //reset
+		CorrConf[1]->i2c_sens_error = i2c_error; //ошибка датчика
+		i2c_error=0;
+		I2C1->CR1 |= I2C_CR1_SWRST; //reset
 // конфигурируем ножки на выход (иногда слетала конфигурация)
-	    	GPIOB->CRL |= GPIO_CRL_CNF6_0 | GPIO_CRL_CNF6_1 |GPIO_CRL_CNF7_0 | GPIO_CRL_CNF7_1;
+		GPIOB->CRL |= GPIO_CRL_CNF6_0 | GPIO_CRL_CNF6_1 |GPIO_CRL_CNF7_0 | GPIO_CRL_CNF7_1;
 
-	    	if (!((GPIOB->IDR) & (1<<7))) //слейв держит шину
-	    	{
-	    		while  (!((GPIOB->IDR) & (1<<7)))
-	    		{
-	    			GPIOB->CRL &= ~ GPIO_CRL_CNF6_1; //шлём клоки, пока слейв не отпуситит шину
-	    			Delay(1);
-	    			GPIOB->CRL |= GPIO_CRL_CNF6_1;
-	    			Delay(1);
-	    		}
-	    	}
+		if (!((GPIOB->IDR) & (1<<7))) //слейв держит шину
+		{
+			while  (!((GPIOB->IDR) & (1<<7)))
+			{
+				GPIOB->CRL &= ~ GPIO_CRL_CNF6_1; //шлём клоки, пока слейв не отпуситит шину
+				Delay(1);
+				GPIOB->CRL |= GPIO_CRL_CNF6_1;
+				Delay(1);
+			}
+		}
 
-	    	Delay(10);
-	    	I2C1->CR1 &= ~I2C_CR1_SWRST; //отпускаем reset
-	    	init_I2C(I2C1);	//инит i2c после ресета
+		Delay(10);
+		I2C1->CR1 &= ~I2C_CR1_SWRST; //отпускаем reset
+		init_I2C(I2C1); //инит i2c после ресета
 	    }
 
 	    //отключаемся от 2го датчика
@@ -1352,23 +1353,10 @@ int main(void)
 	    GPIOB->ODR &= ~GPIO_ODR_ODR8 & ~GPIO_ODR_ODR9;
 
 
-// ------------------------ чтение PCA9534 -------------------------------------------------------------
+// ------------------------ I2C обмен -------------------------------------------------------------
 
-//	    CorrConf[0]->PCA9534_0 = ~SW_I2C_ReadControl_8Bit(SW_I2C2,0x40,0);
-  // CorrConf[0]->PCA9534_2 = SW_I2C_ReadControl_8Bit(SW_I2C2,0x40,2);
-
-	    // запись в PCA9534 новых значений
-//	    CorrConf[0]->sw_i2c_connection = SW_I2C_WriteControl_8Bit(SW_I2C2,0x40,3,~(CorrConf[0]->PCA9534_3));
-//	    SW_I2C_WriteControl_8Bit(SW_I2C2,0x40,1,(CorrConf[0]->PCA9534_1));
-
-// I2C_StartTransmission(I2C2,I2C_Direction_Transmitter,0x40);
-// I2C_WriteData(I2C2,1);
-// I2C_WriteData(I2C2,Count_time);
-// I2C_GenerateSTOP(I2C2, ENABLE);
-	    Count_time++;
-	    RxBuffer[1]=Count_time & 0xff;
-	    VentConf->LightOn=RxBuffer[0];
-
+	    RxBuffer[1]=Slave_Err;
+	    //VentConf->LightOn=RxBuffer[0];
 
 // ----------------------- читаем с hx710 температуру и давление -------------------------------------
 
@@ -1376,28 +1364,28 @@ int main(void)
 	    Count=0;
 	    if (!(GPIOB->IDR&(GPIO_IDR_IDR14)))
 	    {
-	    	for (i=0;i<24;i++)
-	    	{
-	    		hx711_clkpulse (); //импульс на clk
-	    		Count<<=1;
-	    		if(GPIOB->IDR&(GPIO_IDR_IDR14)) Count++;
-	    	}
-	    	hx711_clkpulse (); //25й импульс
-	    	hx711_clkpulse (); //26й импульс
-	    	if (hx710_phase==0) //была фаза давления
-	    	{
-	    		hx710_phase=1; //переключаемся на температуру
-	    		VentConf->HX711_press=Count>>8;
-	    	}
-	    	else
-	    	{
-	    		VentConf->HX711_temper=(Count-2560000)>>7;
-	    		hx710_phase=0; //переключаемся на давление
-	    		hx711_clkpulse (); //27й импульс
-	    	}
+		for (i=0;i<24;i++)
+		{
+			hx711_clkpulse (); //импульс на clk
+			Count<<=1;
+			if(GPIOB->IDR&(GPIO_IDR_IDR14)) Count++;
+		}
+		hx711_clkpulse (); //25й импульс
+		hx711_clkpulse (); //26й импульс
+		if (hx710_phase==0) //была фаза давления
+		{
+			hx710_phase=1; //переключаемся на температуру
+			VentConf->HX711_press=Count>>8;
+		}
+		else
+		{
+			VentConf->HX711_temper=(Count-2560000)>>7;
+			hx710_phase=0; //переключаемся на давление
+			hx711_clkpulse (); //27й импульс
+		}
 	    }
 
-// **************** логика режима "шлюз" ********************************************************
+// **************** логика режима "шлюз" слейв ********************************************************
 
 	    // обработка регистра debug
 	    if (VentConf->debug ==1 ) { CorrConf[0]->WorkMode &= ~0x01; } // бит шлюза сбрасываем
@@ -1407,148 +1395,133 @@ int main(void)
 
 	    if (CorrConf[0]->WorkMode & 1) //режим "шлюз"
 	    {
-	    	VentConf->fan_on=0; //выкл регулятора
+		VentConf->fan_on=0; //выкл регулятора
 
-	    	switch (GateWayState)
-	    	{
-	    	case 0: //ждём открытия любой двери
-	    		TIM3->CCR3=0;       //выкл вентилятора
-	    		VentConf->fan_power=0;   //
-	    		VentConf->UV_on=0; //выкл УФ
-	    		CorrConf[0]->PCA9534_1 &= ~0xf0; //разблокировка дверей,  выкл светофор, выкл пищалки
-	    		if (SecondCounter-LightOnMoment>CorrConf[0]->LightTime)	  VentConf->LightOn=0; //выкл свет
-	    		if (CorrConf[0]->PCA9534_0 & 1) //открыта дверь 1 (грязная)
+		switch (GateWayState)
+		{
+		case 0: //ждём начала обработки
+
+			TIM3->CCR3=0;	    //выкл вентилятора
+			VentConf->fan_power=0;	 //
+			VentConf->UV_on=0; //выкл УФ
+			CorrConf[0]->PCA9534_1 &= ~0xf0; //разблокировка дверей,  выкл светофор, выкл пищалки
+			if (SecondCounter-LightOnMoment>CorrConf[0]->LightTime)   VentConf->LightOn=0; //выкл свет
+
+			if (RxBuffer[0] == 1) //начат цикл
+			{
+				VentConf->LightOn=1; //вкл свет
+				CorrConf[0]->PCA9534_1 &= ~0x10; // выкл пищалки
+				TIM3->CCR3=CorrConf[0]->InFanPower*65535/10000;       //вкл вентилятора
+				VentConf->fan_power=CorrConf[0]->InFanPower;   //
+				FanOnMoment=SecondCounter; //взводим таймер выключения вентилятора
+				if ((CorrConf[0]->WorkMode & 4)==0)  //уф включен
+				{
+					VentConf->UV_on=1; //вкл УФ
+				};
+				GateWayState=3;
+				CheckOnMoment =SecondCounter; // взводим таймер проверки фильтра
+			};
+
+			break;
+
+		case 3:  //ждём окончания цикла обработки
+
+
+			//если время обработки закончилось переходим в начальное состояние
+			if (RxBuffer[0] == 0) //окончен цикл
+			{
+				GateWayState=4;
+			}
+
+			//если время ожидания проверки закончилось - начинаем проверку значений
+			if (SecondCounter-CheckOnMoment > CorrConf[0]->CheckTime)
+			{
+
+				// главный регистр аварии - индикация аварии на главном экране
+				if ((VentConf->filter_alarm>0) || (VentConf->fan_alarm>0) )
+				{
+					VentConf->main_alarm=1;
+					Slave_Err |= 2; // ОБЩАЯ авария на слейве
+				}
+				else
+				{
+					VentConf->main_alarm=0;
+					Slave_Err &= ~2; // нет ОБЩЕЙ аварии фильтра на слейве
+				};
+
+				// Проверка аварии 1 мотора
+				if (CorrConf[0]->FanSpeed < 5 )
+				{
+					VentConf->fan_alarm |= 1;
+				}
+				else
+					VentConf->fan_alarm &= ~1;
+
+				// Проверка макс давления на фильтре 1
+				if (VentConf->max_pres*10 < CorrConf[0]->press_i2c )
+				{
+					VentConf->filter_alarm |= 1;
+				}
+				else
+				{
+					VentConf->filter_alarm &= ~1;  //сброс ошибки засора фильтра
+				};
+
+				// Проверка мин давления на фильтре 1
+				if (VentConf->min_pres*10 > CorrConf[0]->press_i2c )
+				{
+					VentConf->filter_alarm |= 2;
+					Slave_Err |= 1; // Порыв фильтра на слейве
+				}
+				else
+				{
+					VentConf->filter_alarm &= ~2;  //сброс ошибки порыва первого фильтра
+				    Slave_Err &= ~1; // нет Порыва фильтра на слейве
+				};
+
+				// если ФВМ 2 и более, то проверяем второй
+				if (CorrConf[0]->FFMnumber > 1)
 	    		{
-	    			GateWayState=1;
-	    			CorrConf[0]->PCA9534_1 |= 0x70; //блокировка противоположной двери и вкл светофор, пищалка
-	    			VentConf->LightOn=1; //вкл свет
-	    		};
-	    		if (CorrConf[0]->PCA9534_0 & 2) //открыта дверь 2 (чистая)
-	    		{
-	    			GateWayState=2;
-	    			CorrConf[0]->PCA9534_1 |= 0xb0; //блокировка противоположной двери, вкл светофор, пищалка
-	    			VentConf->LightOn=1; //вкл свет
-	    		};
-	    		break;
+					// Проверка аварии 2 мотора
+					if (CorrConf[1]->FanSpeed < 5 )
+					{
+						VentConf->fan_alarm |= 2;
+					}
+					else
+						VentConf->fan_alarm &= ~2;
 
-	    	case 1: //ждём закрытия двери 1
-	    		if ((CorrConf[0]->PCA9534_0 & 3)==0) //обе двери закрыты
-	    		{
-	    			CorrConf[0]->PCA9534_1 &= ~0x10; // выкл пищалки
-	    			TIM3->CCR3=CorrConf[0]->InFanPower*65535/10000;       //вкл вентилятора
-	    			VentConf->fan_power=CorrConf[0]->InFanPower;   //
-	    			FanOnMoment=SecondCounter; //взводим таймер выключения вентилятора
-	    			if ((CorrConf[0]->WorkMode & 4)==0)  //уф включен
-	    			{
-	    				VentConf->UV_on=1; //вкл УФ
-	    			};
-	    			GateWayState=3;
-	    			CheckOnMoment =SecondCounter; // взводим таймер проверки фильтра
-	    		}
-	    		break;
+					// Проверка макс давления на фильтре 1
+					if (VentConf->max_pres*10 < CorrConf[1]->press_i2c )
+					{
+						VentConf->filter_alarm |= 1;
+					}
+					else
+					{
+						VentConf->filter_alarm &= ~1;  //сброс ошибки засора фильтра
+					};
 
-	    	case 2: //ждём закрытия двери 2
-	    		if ((CorrConf[0]->PCA9534_0 & 3)==0) //обе двери закрыты
-	    		{
-	    			CorrConf[0]->PCA9534_1 &= ~0x10; // выкл пищалки
-	    			if (CorrConf[0]->WorkMode & 2)  //двусторонний шлюз
-	    			{
-	    				TIM3->CCR3=CorrConf[0]->InFanPower*65535/10000;       //вкл вентилятора
-	    				VentConf->fan_power=CorrConf[0]->InFanPower;   //
-	    				FanOnMoment=SecondCounter; //взводим таймер выключения вентилятора
-	    				//VentConf->UV_on=1; //вкл УФ
-	    				if  ((CorrConf[0]->WorkMode & 4)==0)   //уф включен
-	    				{
-	    					VentConf->UV_on=1; //вкл УФ
-	    				};
-	    				GateWayState=3;
-	    				CheckOnMoment =SecondCounter; // взводим таймер проверки фильтра
-	    			}
-	    			else
-	    			{
-	    				GateWayState=4;
-	    			}
-	    		}
-	    		break;
-
-	    	case 3:  //ждём окончания цикла обработки
-	    		CorrConf[0]->PCA9534_1 |= 0xc0; //блокировка двух дверей
-
-	    		//мигаем светофором
-	    		if (mSecondCounter>500) CorrConf[0]->PCA9534_1 &= ~0x20; //выкл светофор
-	    		else  CorrConf[0]->PCA9534_1 |= 0x20; //вкл светофор
-
-	    		//если время обработки закончилось переходим в начальное состояние
-	    		if (SecondCounter-FanOnMoment > CorrConf[0]->BlowTime)
-	    		{
-	    			GateWayState=4;
-	    		}
-
-	    		//если время ожидания проверки закончилось - начинаем проверку значений
-	    		if (SecondCounter-CheckOnMoment > CorrConf[0]->CheckTime)
-	    		{
-	    			// Проверка аварии 1 мотора
-	    			if (CorrConf[0]->FanSpeed < 5 )
-	    			{
-	    				VentConf->fan_alarm |= 1;
-	    			}
-	    			else
-	    				VentConf->fan_alarm &= ~1;
-
-	    			// Проверка аварии 2 мотора
-	    			if (CorrConf[1]->FanSpeed < 5 )
-	    			{
-	    				VentConf->fan_alarm |= 2;
-	    			}
-	    			else
-	    				VentConf->fan_alarm &= ~2;
-
-	    			// Проверка макс давления на фильтре 1
-	    			if (VentConf->max_pres*10 < CorrConf[0]->press_i2c )
-	    			{
-	    				VentConf->filter_alarm |= 1;
-	    			}
-	    			else
-	    				VentConf->filter_alarm &= ~1;  //сброс ошибки засора фильтра
+					// Проверка мин давления на 2 фильтре
+					if (VentConf->min_pres*10 > CorrConf[1]->press_i2c )
+					{
+						VentConf->filter_alarm |= 8;
+						Slave_Err |= 1; // Порыв фильтра на слейве
+					}
+					else
+					{
+						VentConf->filter_alarm &= ~8;  //сброс ошибки порыва второго фильтра
+						Slave_Err &= ~1; // нет Порыва фильтра на слейве
+					};
+				};
+			}
 
 
-	    			// Проверка макс давления на 2 фильтре
-	    			if (VentConf->max_pres*10 < CorrConf[1]->press_i2c )
-	    			{
-	    				VentConf->filter_alarm |= 4;
-	    			}
-	    			else
-	    				VentConf->filter_alarm &= ~4;  //сброс ошибки засора фильтра
+			break;
 
-
-	    			// Проверка мин давления на фильтре 1
-	    			if (VentConf->min_pres*10 > CorrConf[0]->press_i2c )
-	    			{
-	    				VentConf->filter_alarm |= 2;
-	    				GateWayState=4; // переходим с ошибкой в начальное состояние
-	    			}
-	    			else
-	    				VentConf->filter_alarm &= ~2;  //сброс ошибки порыва первого фильтра
-
-	    			// Проверка мин давления на 2 фильтре
-	    			if (VentConf->min_pres*10 > CorrConf[1]->press_i2c )
-	    			{
-	    				VentConf->filter_alarm |= 8;
-	    				GateWayState=4; // переходим с ошибкой в начальное состояние
-	    			}
-	    			else
-	    				VentConf->filter_alarm &= ~8;  //сброс ошибки порыва вротого фильтра
-
-	    		}
-
-
-	    		break;
-
-	    	default:
-	    		LightOnMoment = SecondCounter; //взводим световой таймер
-	    		GateWayState=0;
-	    		break;
-	    	} //end switch
+		default:
+			LightOnMoment = SecondCounter; //взводим световой таймер
+			GateWayState=0;
+			break;
+		} //end switch
 	    } //режим шлюз
 
 	    VentConf->debug2 = stop_count;
